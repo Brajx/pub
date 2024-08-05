@@ -4,20 +4,18 @@ import com.sb.demo.model.dto.LoginDto;
 import com.sb.demo.model.dto.RegisterDto;
 import com.sb.demo.response.JwtAuthResponse;
 import com.sb.demo.service.AuthService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@AllArgsConstructor
+@CrossOrigin("*")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private AuthService authService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto){
@@ -27,9 +25,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
-        String token =authService.login(loginDto);
 
-        JwtAuthResponse response=JwtAuthResponse.builder().accessToken(token).build();
+
+        JwtAuthResponse response=authService.login(loginDto);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 

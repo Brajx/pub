@@ -17,7 +17,6 @@ public class CustomerMapper {
                .customerEmailAddress(customerModel.getCustomerEmailAddress())
                .customerAddress(customerModel.getCustomerAddress())
                .status(customerModel.getStatus())
-               .verified(customerModel.isVerified())
                .createdDate(customerModel.getCreateDate())
                .updatedDate(customerModel.getUpdateDate())
                .build();
@@ -33,7 +32,6 @@ public class CustomerMapper {
                 .customerAddress(request.getCustomerAddress())
                 .status(CustomerStatus.INACTIVE)
                 .customerOtp(AppUtils.generateOtp())
-                .verified(Boolean.FALSE)
                 .build();
     }
 

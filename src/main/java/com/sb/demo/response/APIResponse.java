@@ -12,5 +12,5 @@ import lombok.*;
 public class APIResponse {
     private int errorCode;
     private String errorMessage;
-    private Object data;
+    private Object responseData;
 }

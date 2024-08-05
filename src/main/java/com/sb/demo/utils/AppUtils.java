@@ -1,5 +1,8 @@
 package com.sb.demo.utils;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.security.SecureRandom;
 import java.util.stream.Collectors;
 
@@ -32,4 +35,12 @@ public class AppUtils {
                 .map(Object::toString)
                 .collect(Collectors.joining());
     }
+
+//    public static void main(String[] args) {
+//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//
+//        System.out.println(passwordEncoder.encode("123456"));
+//
+//        System.out.println(passwordEncoder.encode("admin"));
+//    }
 }

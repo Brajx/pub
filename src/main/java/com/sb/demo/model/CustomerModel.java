@@ -50,9 +50,6 @@ public class CustomerModel implements Serializable{
     @Column(name = "otp")
     private String customerOtp;
 
-    @Column(name = "verified")
-    private boolean verified;
-
     @Column(name = "created_by")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp

@@ -30,7 +30,7 @@ public class CustomerServiceImp implements CustomerService {
         CustomerModel customerModel=customerRepository.save(requestToModel(request));
        return ResponseEntity.ok(
                APIResponse.builder().errorCode(SUCCESS_CODE).errorMessage(SUCCESSFULLY_STORED)
-                       .data(modelToResponse(customerModel)).build()
+                       .responseData(modelToResponse(customerModel)).build()
        );
     }
 
@@ -45,7 +45,7 @@ public class CustomerServiceImp implements CustomerService {
                 APIResponse.builder()
                         .errorCode(SUCCESS_CODE)
                         .errorMessage(SUCCESSFULLY_RETRIEVED)
-                        .data(customerResponses)
+                        .responseData(customerResponses)
                         .build()
         );
     }
@@ -60,7 +60,7 @@ public class CustomerServiceImp implements CustomerService {
                     APIResponse.builder()
                             .errorCode(SUCCESS_CODE)
                             .errorMessage(SUCCESSFULLY_RETRIEVED)
-                            .data(response)
+                            .responseData(response)
                             .build()
 
             );
@@ -69,7 +69,7 @@ public class CustomerServiceImp implements CustomerService {
                     APIResponse.builder()
                             .errorCode(CUSTOMER_NOT_EXISTS_CODE)
                             .errorMessage(CUSTOMER_NOT_EXISTS)
-                            .data(List.of())
+                            .responseData(List.of())
                             .build());
         }
     }
@@ -82,7 +82,7 @@ public class CustomerServiceImp implements CustomerService {
                     APIResponse.builder()
                             .errorCode(CUSTOMER_NOT_EXISTS_CODE)
                             .errorMessage(CUSTOMER_NOT_EXISTS)
-                            .data(List.of())
+                            .responseData(List.of())
                             .build()
             );
         }else {
@@ -91,7 +91,7 @@ public class CustomerServiceImp implements CustomerService {
                     APIResponse.builder()
                             .errorCode(SUCCESS_CODE)
                             .errorMessage(SUCCESSFULLY_DELETED)
-                            .data(List.of())
+                            .responseData(List.of())
                             .build()
             );
 
@@ -114,7 +114,7 @@ public class CustomerServiceImp implements CustomerService {
                     APIResponse.builder()
                             .errorCode(SUCCESS_CODE)
                             .errorMessage(SUCCESSFULLY_UPDATED)
-                            .data(modelToResponse(Model))
+                            .responseData(modelToResponse(Model))
                             .build()
             );
         }
@@ -123,7 +123,7 @@ public class CustomerServiceImp implements CustomerService {
                     APIResponse.builder()
                             .errorCode(CUSTOMER_NOT_EXISTS_CODE)
                             .errorMessage(CUSTOMER_NOT_EXISTS)
-                            .data(List.of())
+                            .responseData(List.of())
                             .build()
             );
         }

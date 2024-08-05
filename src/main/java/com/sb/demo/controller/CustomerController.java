@@ -5,8 +5,10 @@ import com.sb.demo.response.APIResponse;
 import com.sb.demo.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/customer")
@@ -14,11 +16,14 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+
     @PostMapping("/create")
     public ResponseEntity<APIResponse> createCustomer(@RequestBody CustomerRequest request){
         return customerService.createCustomer(request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/getAll")
     public ResponseEntity<APIResponse> getAllCustomer(){
         return customerService.getAllCustomers();

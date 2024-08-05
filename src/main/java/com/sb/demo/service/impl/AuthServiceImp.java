@@ -7,6 +7,7 @@ import com.sb.demo.model.dto.LoginDto;
 import com.sb.demo.model.dto.RegisterDto;
 import com.sb.demo.repository.rolerepo.RoleRepository;
 import com.sb.demo.repository.userrepo.UserRepository;
+import com.sb.demo.response.JwtAuthResponse;
 import com.sb.demo.security.JwtTokenProvider;
 import com.sb.demo.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,11 @@ import java.util.Set;
 @AllArgsConstructor
 public class AuthServiceImp implements AuthService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public String register(RegisterDto registerDto) {
@@ -51,6 +52,7 @@ public class AuthServiceImp implements AuthService {
         role.add(role1);
 
         User user = User.builder()
+
                 .username(registerDto.getUsername())
                 .email(registerDto.getEmail())
                 .password(passwordEncoder.encode(registerDto.getPassword()))
@@ -63,15 +65,45 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public String login(LoginDto loginDto) {
+    public JwtAuthResponse login(LoginDto loginDto) {
+//
+//        Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+//                loginDto.getUsernameOrEmail(),
+//                loginDto.getPassword()
+//                ));
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        String token = jwtTokenProvider.generateToken(authentication);
+//        return token;
+//    }
 
-        Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsernameOrEmail(),
-                loginDto.getPassword()
-                ));
+
+    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            loginDto.getUsernameOrEmail(),
+            loginDto.getPassword()
+    ));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token=jwtTokenProvider.generateToken(authentication);
-        return token;
+    String token = jwtTokenProvider.generateToken(authentication);
+
+    Optional<User> userOptional = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(),
+            loginDto.getUsernameOrEmail());
+
+    String role = null;
+        if(userOptional.isPresent()){
+        User loggedInUser = userOptional.get();
+        Optional<Role> optionalRole = loggedInUser.getRoles().stream().findFirst();
+
+        if(optionalRole.isPresent()){
+            Role userRole = optionalRole.get();
+            role = userRole.getName();
+        }
     }
+
+    JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setRole(role);
+        jwtAuthResponse.setAccessToken(token);
+        return jwtAuthResponse;
+}
 }

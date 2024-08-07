@@ -1,6 +1,6 @@
 package com.sb.demo.service.impl;
 
-import com.sb.demo.exception.CustomerRegException;
+import com.sb.demo.exception.UserException;
 import com.sb.demo.model.Role;
 import com.sb.demo.model.User;
 import com.sb.demo.model.dto.LoginDto;
@@ -39,12 +39,12 @@ public class AuthServiceImp implements AuthService {
 
         // check username is already exists in database
         if(userRepository.existsByUsername(registerDto.getUsername())){
-            throw new CustomerRegException(HttpStatus.BAD_REQUEST, "Username already exists!");
+            throw new UserException(HttpStatus.BAD_REQUEST, "Username already exists!");
         }
 
         // check email is already exists in database
         if(userRepository.existsByEmail(registerDto.getEmail())){
-            throw new CustomerRegException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
+            throw new UserException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
         }
 
         Set<Role> role=new HashSet<>();

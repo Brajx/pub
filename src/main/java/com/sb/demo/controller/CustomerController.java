@@ -1,12 +1,25 @@
 package com.sb.demo.controller;
 
+import com.sb.demo.model.CustomerModel;
+import com.sb.demo.repository.CustomerRepository;
 import com.sb.demo.request.CustomerRequest;
 import com.sb.demo.response.APIResponse;
+import com.sb.demo.response.CustomerResponse;
 import com.sb.demo.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+import static com.sb.demo.constants.AppConstants.SUCCESSFULLY_RETRIEVED;
+import static com.sb.demo.constants.AppConstants.SUCCESS_CODE;
+import static com.sb.demo.mapper.CustomerMapper.modelToResponse;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @CrossOrigin("*")
 @RestController
@@ -15,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
 
 
     @PostMapping("/create")
@@ -22,7 +36,7 @@ public class CustomerController {
         return customerService.createCustomer(request);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+ //   @PreAuthorize("hasRole('ADMIN')")
    // @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/getAll")
     public ResponseEntity<APIResponse> getAllCustomer(){
@@ -44,4 +58,26 @@ public class CustomerController {
         return customerService.updateCustomerDetails(customerId,request);
     }
 
-}
+    @GetMapping("/getById1/{customerId}")
+    public EntityModel<APIResponse> retrieveCostomer(@PathVariable long customerId){
+
+
+            Optional<CustomerModel> customerModel=customerRepository.findById(customerId);
+            CustomerModel c=customerModel.get();
+            CustomerResponse response = modelToResponse(c);
+
+            APIResponse apiResponse= APIResponse.builder()
+                    .errorCode(SUCCESS_CODE)
+                    .errorMessage(SUCCESSFULLY_RETRIEVED)
+                    .responseData(response)
+                    .build();
+
+
+            EntityModel<APIResponse> entityModel=EntityModel.of(apiResponse);
+            WebMvcLinkBuilder webMvcLinkBuilder=linkTo(methodOn(this.getClass()).getAllCustomer());
+            entityModel.add(webMvcLinkBuilder.withRel("all-user"));
+            return entityModel;
+        }
+
+
+    }

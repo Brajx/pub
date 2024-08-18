@@ -24,6 +24,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers;
+
 @Configuration
 @EnableMethodSecurity
 @AllArgsConstructor
@@ -32,6 +34,20 @@ public class SpringSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/api/public/**",
+            "/api/public/authenticate",
+            "/actuator/*",
+            "/swagger-ui/**"
+    };
 
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -44,17 +60,22 @@ public class SpringSecurityConfig {
         httpSecurity.csrf(csrf->csrf.disable())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers(HttpMethod.POST ,"/api/auth/**").permitAll();                  authorize.requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("ADMIN");
+                     authorize.requestMatchers("/actuator/**").permitAll();
+                     authorize.requestMatchers(AUTH_WHITELIST).permitAll();
+
+ //                   authorize.requestMatchers(HttpMethod.POST ,"/api/auth/**").permitAll()
+                    // authorize.requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN");
+ //                   authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("ADMIN");
 //                    authorize.requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN");
 //                    authorize.requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER");
 //                    authorize.requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("ADMIN", "USER");
-//                    authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll();
+                    authorize.requestMatchers("/**").permitAll();
                     authorize.anyRequest().authenticated();
 
-                }).httpBasic(Customizer.withDefaults());
-        httpSecurity.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                });//.httpBasic(Customizer.withDefaults());
+ //       httpSecurity.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+ //       httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
         return httpSecurity.build();

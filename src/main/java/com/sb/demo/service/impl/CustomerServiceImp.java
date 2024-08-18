@@ -7,6 +7,8 @@ import com.sb.demo.response.APIResponse;
 import com.sb.demo.response.CustomerResponse;
 import com.sb.demo.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.Optional;
 import static com.sb.demo.constants.AppConstants.*;
 import static com.sb.demo.mapper.CustomerMapper.modelToResponse;
 import static com.sb.demo.mapper.CustomerMapper.requestToModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @RequiredArgsConstructor
@@ -128,4 +132,7 @@ public class CustomerServiceImp implements CustomerService {
             );
         }
     }
+
+
+
 }
